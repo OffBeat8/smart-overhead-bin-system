@@ -1,0 +1,33 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Smart Overhead Bin System V5</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;color:#fff;background:linear-gradient(135deg,#061326,#123a6b);overflow-x:hidden} .bg{position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 20% 20%,rgba(59,130,246,.25),transparent 25%),radial-gradient(circle at 80% 30%,rgba(34,197,94,.18),transparent 25%)}
+.wave{position:fixed;bottom:0;width:100%;opacity:.2}.wrap{max-width:1300px;margin:auto;padding:25px}.card{background:rgba(255,255,255,.08);backdrop-filter:blur(12px);padding:25px;border-radius:24px}.steps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}.stepbtn{background:#1e3a5f;padding:10px 14px;border-radius:20px;cursor:pointer}.activeTab{background:#22c55e;color:#000;font-weight:700}.page{display:none}.show{display:block}button{background:#2563eb;color:#fff;border:none;padding:12px 18px;border-radius:10px;cursor:pointer}input{width:100%;padding:12px;border:none;border-radius:10px;margin:8px 0 14px}.nav{display:flex;justify-content:space-between;margin-top:20px}.seatmap{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.seat{background:#334155;padding:12px;border-radius:8px;text-align:center;cursor:pointer}.sel{background:#22c55e;color:#000}.cabin{display:grid;grid-template-columns:1fr 1fr;gap:20px}.bin{padding:15px;border-radius:12px;text-align:center}.g{background:#15803d}.a{background:#b45309}.r{background:#b91c1c}.wallet{max-width:420px;margin:auto;padding:20px;border-radius:20px}.apple{background:linear-gradient(135deg,#111827,#4b5563)}.google{background:linear-gradient(135deg,#4285f4,#34a853)}.arch{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.node{background:#1e293b;padding:15px;border-radius:10px;text-align:center}ul{line-height:1.8}
+</style></head><body><div class="bg"></div><svg class="wave" viewBox="0 0 1440 320"><path fill="#60a5fa" d="M0,224L80,208C160,192,320,160,480,176C640,192,800,256,960,261.3C1120,267,1280,213,1360,186.7L1440,160V320H0Z"></path></svg><div class="wrap"><div class="card"><h1>Smart Overhead Bin System V5</h1><p>Airline Digital Wallet Authentication & Smart Cabin Storage Control</p><br>
+<div class="steps" id="steps"></div>
+
+<div id="p1" class="page show"><h2>Check-In</h2><input id="name" placeholder="Passenger Name"><input id="flight" placeholder="Flight Number (BA217)"><div class="nav"><span></span><button onclick="go('p2',1)">Next</button></div></div>
+
+<div id="p2" class="page"><h2>Select Seat</h2><div id="seatmap" class="seatmap"></div><div class="nav"><button onclick="go('p1',0)">Previous</button><button onclick="prepCabin()">Next</button></div></div>
+
+<div id="p3" class="page"><h2>Aircraft Cabin Overview</h2><div class="cabin"><div><h3>Cabin Layout</h3><div class="bin g">BIN A Available</div><div class="bin a">BIN B Partial</div><div class="bin r">BIN C Full</div><div class="bin g">BIN D Assigned</div></div><div><h3>Allocation</h3><p id="alloc"></p></div></div><div class="nav"><button onclick="go('p2',1)">Previous</button><button onclick="buildPass()">Next</button></div></div>
+
+<div id="p4" class="page"><h2>Apple Wallet Pass</h2><div class="wallet apple"><h3>✈ SMART AIR</h3><div id="apple"></div><hr><p>📶 NFC Enabled</p><div style="font-size:60px">▣</div></div><div class="nav"><button onclick="go('p3',2)">Previous</button><button onclick="go('p5',4)">Next</button></div></div>
+
+<div id="p5" class="page"><h2>Google Wallet Pass</h2><div class="wallet google"><h3>Google Wallet</h3><div id="google"></div><hr><p>Smart Tap Ready</p><div style="font-size:60px">▣</div></div><div class="nav"><button onclick="go('p4',3)">Previous</button><button onclick="go('p6',5)">Next</button></div></div>
+
+<div id="p6" class="page"><h2>NFC Authentication</h2><input id="tokenIn" placeholder="Enter displayed token"><button onclick="auth()">Simulate NFC Tap</button><div id="authres"></div><div class="nav"><button onclick="go('p5',4)">Previous</button><button onclick="go('p7',6)">Next</button></div></div>
+
+<div id="p7" class="page"><h2>Crew Administration</h2><button onclick="crew('OPEN ALL')">OPEN ALL</button> <button onclick="crew('CLOSE ALL')">CLOSE ALL</button><p id="crewres"></p><h3>Audit Log</h3><ul><li>Credential validated via Secure Element</li><li>Passenger restricted to assigned compartment</li><li>No wallet credentials stored on bin controller</li></ul><div class="nav"><button onclick="go('p6',5)">Previous</button><button onclick="go('p8',7)">System Architecture</button></div></div>
+
+<div id="p8" class="page"><h2>System Architecture</h2><div class="arch"><div class="node">Passenger</div><div class="node">Apple Wallet / Google Wallet</div><div class="node">Encrypted NFC</div><div class="node">Overhead Bin Controller</div><div class="node">Electronic Lock</div></div><br><p>Departure Control System allocates seat and storage space during check-in. Wallet credentials are issued and validated through secure NFC authentication.</p></div>
+
+</div></div>
+<script>
+const titles=['Check-In','Seat','Cabin','Apple Wallet','Google Wallet','NFC','Crew','Architecture'];const sb=document.getElementById('steps');titles.forEach((t,i)=>{let d=document.createElement('div');d.className='stepbtn';d.id='s'+i;d.innerText=(i+1)+'. '+t;d.onclick=()=>go('p'+(i+1),i);sb.appendChild(d)});
+let seat='',token='';['12A','12B','12C','12D','12E','12F','13A','13B','13C','13D','13E','13F'].forEach(x=>{let d=document.createElement('div');d.className='seat';d.innerText=x;d.onclick=()=>{document.querySelectorAll('.seat').forEach(y=>y.classList.remove('sel'));d.classList.add('sel');seat=x};seatmap.appendChild(d)});
+function go(id,i){document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));document.getElementById(id).classList.add('show');document.querySelectorAll('.stepbtn').forEach(s=>s.classList.remove('activeTab'));document.getElementById('s'+i).classList.add('activeTab');}
+function prepCabin(){alloc.innerHTML='Assigned Seat: <b>'+seat+'</b><br>Allocated Bin: <b>BIN D</b>';go('p3',2)}
+function buildPass(){token='NFC-'+Math.random().toString(36).substring(2,8).toUpperCase();let d='Passenger: '+name.value+'<br>Flight: '+flight.value+'<br>Seat: '+seat+'<br>Bin: D<br><br><b>Token:</b> '+token;apple.innerHTML=d;google.innerHTML=d;go('p4',3)}
+function auth(){authres.innerHTML=(tokenIn.value===token)?'<h2>🔓 Access Granted</h2><p>Assigned overhead bin unlocked.</p>':'<h2 style="color:#f87171">✖ Access Denied</h2>';}
+function crew(c){crewres.innerHTML='Executed command: '+c;}
+go('p1',0);
+</script></body></html>
